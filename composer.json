@@ -1,0 +1,23 @@
+{
+    "name": "hexlet/code",
+    "type": "project",
+    "bin": [
+        "bin/gendiff"
+    ],
+    "description": "generate diff",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Hexlet\\Code\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Vladimir Suragin",
+            "email": "vladimir.suragin@gmail.com"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    }
+}
