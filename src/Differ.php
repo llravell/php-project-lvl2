@@ -28,7 +28,7 @@ function getDiffs(array $data1, array $data2): array
 {
     $res = [];
 
-    foreach($data1 as $key => $value) {
+    foreach ($data1 as $key => $value) {
         if (!array_key_exists($key, $data2)) {
             $res[] = createDiffItem(DIFF_TYPE_REMOVE, $key, $value);
         } elseif ($value !== $data2[$key]) {
@@ -39,7 +39,7 @@ function getDiffs(array $data1, array $data2): array
         }
     }
 
-    foreach($data2 as $key => $value) {
+    foreach ($data2 as $key => $value) {
         if (!array_key_exists($key, $data1)) {
             $res[] = createDiffItem(DIFF_TYPE_ADD, $key, $value);
         }
