@@ -5,7 +5,7 @@ namespace Hexlet\Code\Tests;
 use PHPUnit\Framework\TestCase;
 use function Hexlet\Code\Differ\genDiff;
 
-class UserTest extends TestCase
+class DifferTest extends TestCase
 {
     private function getFixtureFullPath(string $fixtureName)
     {
