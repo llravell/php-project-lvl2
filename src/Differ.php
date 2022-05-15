@@ -14,7 +14,7 @@ const DIFF_PREFIX_BY_TYPE_MAP = [
 
 const SPACE_COUNT_IN_INDENTATION = 2;
 
-function createDiffItem(string $type, string $key, $value): array
+function makeDiffItem(string $type, string $key, $value): array
 {
     return ['type' => $type, 'key' => $key, 'value' => $value];
 }
@@ -24,24 +24,24 @@ function parseData(string $str): array
     return json_decode($str, true);
 }
 
-function getDiffs(array $data1, array $data2): array
+function makeDiffList(array $data1, array $data2): array
 {
     $res = [];
 
     foreach ($data1 as $key => $value) {
         if (!array_key_exists($key, $data2)) {
-            $res[] = createDiffItem(DIFF_TYPE_REMOVE, $key, $value);
+            $res[] = makeDiffItem(DIFF_TYPE_REMOVE, $key, $value);
         } elseif ($value !== $data2[$key]) {
-            $res[] = createDiffItem(DIFF_TYPE_REMOVE, $key, $value);
-            $res[] = createDiffItem(DIFF_TYPE_ADD, $key, $data2[$key]);
+            $res[] = makeDiffItem(DIFF_TYPE_REMOVE, $key, $value);
+            $res[] = makeDiffItem(DIFF_TYPE_ADD, $key, $data2[$key]);
         } else {
-            $res[] = createDiffItem(DIFF_TYPE_NO_CHANGES, $key, $value);
+            $res[] = makeDiffItem(DIFF_TYPE_NO_CHANGES, $key, $value);
         }
     }
 
     foreach ($data2 as $key => $value) {
         if (!array_key_exists($key, $data1)) {
-            $res[] = createDiffItem(DIFF_TYPE_ADD, $key, $value);
+            $res[] = makeDiffItem(DIFF_TYPE_ADD, $key, $value);
         }
     }
 
@@ -53,7 +53,7 @@ function genDiff(string $pathToFile1, string $pathToFile2): string
     $fileContent1 = file_get_contents($pathToFile1);
     $fileContent2 = file_get_contents($pathToFile2);
 
-    $diff = getDiffs(parseData($fileContent1), parseData($fileContent2));
+    $diff = makeDiffList(parseData($fileContent1), parseData($fileContent2));
     $result = [];
 
     foreach ($diff as $diffItem) {
