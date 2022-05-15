@@ -2,6 +2,8 @@
 
 namespace Hexlet\Code\Differ;
 
+use function Hexlet\Code\Parsers\parse;
+
 const DIFF_TYPE_ADD = 'add';
 const DIFF_TYPE_REMOVE = 'remove';
 const DIFF_TYPE_NO_CHANGES = 'no-changes';
@@ -19,13 +21,11 @@ function makeDiffItem(string $type, string $key, $value): array
     return ['type' => $type, 'key' => $key, 'value' => $value];
 }
 
-function parseData(string $str): array
+function makeDiffList(object $data1, object $data2): array
 {
-    return json_decode($str, true);
-}
+    $data1 = (array) $data1;
+    $data2 = (array) $data2;
 
-function makeDiffList(array $data1, array $data2): array
-{
     $res = [];
 
     foreach ($data1 as $key => $value) {
@@ -53,7 +53,10 @@ function genDiff(string $pathToFile1, string $pathToFile2): string
     $fileContent1 = file_get_contents($pathToFile1);
     $fileContent2 = file_get_contents($pathToFile2);
 
-    $diff = makeDiffList(parseData($fileContent1), parseData($fileContent2));
+    $diff = makeDiffList(
+        parse($fileContent1, pathinfo($pathToFile1, PATHINFO_EXTENSION)),
+        parse($fileContent2, pathinfo($pathToFile2, PATHINFO_EXTENSION))
+    );
     $result = [];
 
     foreach ($diff as $diffItem) {
