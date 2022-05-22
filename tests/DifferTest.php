@@ -22,4 +22,14 @@ class DifferTest extends TestCase
 
         $this->assertStringEqualsFile($this->getFixtureFullPath('expected'), $result);
     }
+
+    public function testGenDiffYaml(): void
+    {
+        $result = genDiff(
+            $this->getFixtureFullPath('file1.yaml'),
+            $this->getFixtureFullPath('file2.yml')
+        );
+
+        $this->assertStringEqualsFile($this->getFixtureFullPath('expected'), $result);
+    }
 }
