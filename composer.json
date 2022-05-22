@@ -12,7 +12,9 @@
         },
         "files": [
             "src/Parsers.php",
-            "src/Differ.php"
+            "src/Differ.php",
+            "src/DiffList.php",
+            "src/Formaters.php"
         ]
     },
     "authors": [
