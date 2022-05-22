@@ -57,37 +57,25 @@ function stringifyValue($value, $deep = 1) {
 
 function stylishFormat($diffList)
 {
-    $buildAst = function ($data, $deep = 1) use (&$buildAst) {
+    $iter = function ($data, $deep = 0) use (&$iter) {
         if (is_array($data)) {
-            return ['type' => 'diff_list', 'body' => array_map(fn ($child) => $buildAst($child, $deep + 1), $data)];
-        }
-
-        $prefix = DIFF_PREFIX_BY_TYPE_MAP[$data->type] ?? ' ';
-        if ($data->children) {
-            return ['type' => 'diff', 'prefix' => $prefix, 'name' => $data->key, 'body' => $buildAst($data->children, $deep)];
-        }
-
-        return ['type' => 'diff', 'prefix' => $prefix, 'name' => $data->key, 'body' => stringifyValue($data->value, $deep)];
-    };
-
-    $stringifyAst = function ($ast, $deep = 0) use (&$stringifyAst) {
-        if ($ast['type'] === 'diff_list') {
             $indent = $deep > 0
                 ? str_repeat(' ', SPACE_COUNT_IN_INDENTATION * $deep)
                 : '';
 
-            $parts = array_map(fn ($part) => $stringifyAst($part, $deep + 1), $ast['body']);
+            $parts = array_map(fn ($part) => $iter($part, $deep + 1), $data);
             $body = implode("\n", $parts);
 
             return "{\n{$body}\n{$indent}}";
         }
 
-        $indentWithPrefix = str_pad("{$ast['prefix']} ", SPACE_COUNT_IN_INDENTATION * $deep, ' ', STR_PAD_LEFT);
-        $body = is_array($ast['body']) ? $stringifyAst($ast['body'], $deep) : $ast['body'];
+        $prefix = DIFF_PREFIX_BY_TYPE_MAP[$data->type] ?? ' ';
+        $indentWithPrefix = str_pad("{$prefix} ", SPACE_COUNT_IN_INDENTATION * $deep, ' ', STR_PAD_LEFT);
+        $body = $data->children ? $iter($data->children, $deep) : stringifyValue($data->value, $deep + 1);
         $body = empty($body) ? $body : ' ' . $body;
 
-        return "{$indentWithPrefix}{$ast['name']}:{$body}";
+        return "{$indentWithPrefix}{$data->key}:{$body}";
     };
 
-    return $stringifyAst($buildAst($diffList));
+    return $iter($diffList);
 }
